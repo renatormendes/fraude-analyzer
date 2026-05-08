@@ -2,18 +2,22 @@ package com.projeto.ml.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.core.io.ClassPathResource;
-import weka.classifiers.trees.J48;
+import weka.classifiers.lazy.IBk;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
+import weka.core.DenseInstance;
 import weka.core.converters.ArffLoader;
 import java.io.InputStream;
+import java.util.*;
 
 @Service
 public class DataScienceService {
 
     private final String nl = System.lineSeparator();
 
-    public String treinarEPrever() throws Exception {
+    // Método para o Gráfico (Novo Motor KNN)
+    public Map<String, Object> preverUnico(double sl, double sw, double pl, double pw) throws Exception {
+        Locale.setDefault(Locale.US);
         ClassPathResource res = new ClassPathResource("iris.arff");
         try (InputStream is = res.getInputStream()) {
             ArffLoader loader = new ArffLoader();
@@ -21,31 +25,26 @@ public class DataScienceService {
             Instances data = loader.getDataSet();
             data.setClassIndex(data.numAttributes() - 1);
 
-            // Treino
-            J48 tree = new J48();
-            tree.buildClassifier(data);
+            IBk knn = new IBk(3); 
+            knn.buildClassifier(data);
 
-            // Estatísticas (Evaluation)
-            Evaluation eval = new Evaluation(data);
-            eval.evaluateModel(tree, data);
+            double[] valores = new double[] {sl, sw, pl, pw, 0};
+            DenseInstance novo = new DenseInstance(1.0, valores);
+            novo.setDataset(data);
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("==========================================").append(nl);
-            sb.append("   RELATÓRIO DE CIÊNCIA DE DADOS (IA)    ").append(nl);
-            sb.append("==========================================").append(nl).append(nl);
-            sb.append("ESTRUTURA DO MODELO:").append(nl);
-            sb.append(tree.toString()).append(nl);
-            sb.append("ESTATÍSTICAS DE PERFORMANCE:").append(nl);
-            sb.append(eval.toSummaryString("Resumo:", false)).append(nl);
-            sb.append("MATRIZ DE CONFUSÃO:").append(nl);
-            sb.append(eval.toMatrixString()).append(nl);
-            sb.append("==========================================");
-            
-            return sb.toString();
+            double[] dist = knn.distributionForInstance(novo);
+            String vencedora = data.classAttribute().value((int) knn.classifyInstance(novo));
+
+            Map<String, Object> resultado = new HashMap<>();
+            resultado.put("vencedora", vencedora);
+            resultado.put("probabilidades", dist);
+            return resultado;
         }
     }
 
-    public String preverUnico(double sl, double sw, double pl, double pw) throws Exception {
+    // Método para o Relatório (Consertando o erro de compilação)
+    public String treinarEPrever() throws Exception {
+        Locale.setDefault(Locale.US);
         ClassPathResource res = new ClassPathResource("iris.arff");
         try (InputStream is = res.getInputStream()) {
             ArffLoader loader = new ArffLoader();
@@ -53,23 +52,15 @@ public class DataScienceService {
             Instances data = loader.getDataSet();
             data.setClassIndex(data.numAttributes() - 1);
 
-            J48 tree = new J48();
-            tree.buildClassifier(data);
+            IBk knn = new IBk(3);
+            knn.buildClassifier(data);
 
-            weka.core.Instance novo = new weka.core.DenseInstance(5);
-            novo.setDataset(data);
-            novo.setValue(0, sl);
-            novo.setValue(1, sw);
-            novo.setValue(2, pl);
-            novo.setValue(3, pw);
+            Evaluation eval = new Evaluation(data);
+            eval.evaluateModel(knn, data);
 
-            double resClass = tree.classifyInstance(novo);
-            String especie = data.classAttribute().value((int) resClass);
-
-            return String.format(
-                "{%s  \"status\": \"sucesso\",%s  \"ia_output\": \"%s\",%s  \"model\": \"J48 Decision Tree\"%s}",
-                nl, nl, especie, nl, nl
-            );
+            return "--- RELATÓRIO TÉCNICO IA ---" + nl + 
+                   eval.toSummaryString() + nl + 
+                   eval.toMatrixString();
         }
     }
 }

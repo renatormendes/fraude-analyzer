@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>IA Predictor - Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #eef2f3; display: flex; justify-content: center; padding: 40px; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 450px; }
+        h2 { text-align: center; color: #333; margin-bottom: 25px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 14px; color: #666; margin-bottom: 5px; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px; }
+        
+        #resultado-caixa { margin-top: 25px; padding: 15px; border-radius: 8px; background: #f8f9fa; display: none; }
+        .vencedora-estilo { text-align: center; font-size: 18px; color: #28a745; margin-bottom: 15px; font-weight: bold; }
+        
+        
+        /* Estilo das barras cinzas (background) */
+        .barra-container { 
+            height: 22px; 
+            background: #dee2e6; /* Cinza mais forte para o trilho ficar mais visível */
+            border-radius: 11px; 
+            margin: 5px 0 15px 0; 
+            overflow: hidden; 
+            border: 1px solid #ced4da;
+            position: relative; 
+        }
+        
+        /* Estilo do preenchimento colorido */
+        .barra-preenchida { 
+            height: 100%; 
+            width: 0%; 
+            transition: width 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            text-align: center; 
+            color: white; 
+            font-size: 11px; 
+            line-height: 22px;
+            font-weight: bold; 
+        }
+
+        .label-ia { 
+            font-size: 12px; 
+            font-weight: bold; 
+            color: #444; 
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Iris Predictor IA</h2>
+    <div class="input-group">
+        <label>Comprimento da Sépala</label>
+        <input type="number" id="sl" value="5.1" step="0.1">
+    </div>
+    <div class="input-group">
+        <label>Largura da Sépala</label>
+        <input type="number" id="sw" value="3.5" step="0.1">
+    </div>
+    <div class="input-group">
+        <label>Comprimento da Pétala</label>
+        <input type="number" id="pl" value="1.4" step="0.1">
+    </div>
+    <div class="input-group">
+        <label>Largura da Pétala</label>
+        <input type="number" id="pw" value="0.2" step="0.1">
+    </div>
+    <button onclick="prever()">ANALISAR AGORA</button>
+
+    <!-- Área de resultados com as 3 barras sempre visíveis após o primeiro clique -->
+    <div id="resultado-caixa">
+        <div id="vencedora-texto" class="vencedora-estilo"></div>
+        
+        <div class="label-ia">Setosa</div>
+        <div class="barra-container"><div id="b0" class="barra-preenchida" style="background: #28a745;"></div></div>
+        
+        <div class="label-ia">Versicolor</div>
+        <div class="barra-container"><div id="b1" class="barra-preenchida" style="background: #ffc107;"></div></div>
+        
+        <div class="label-ia">Virginica</div>
+        <div class="barra-container"><div id="b2" class="barra-preenchida" style="background: #dc3545;"></div></div>
+    </div>
+</div>
+
+<script>
+async function prever() {
+    const payload = {
+        sepallength: parseFloat(document.getElementById('sl').value),
+        sepalwidth: parseFloat(document.getElementById('sw').value),
+        petallength: parseFloat(document.getElementById('pl').value),
+        petalwidth: parseFloat(document.getElementById('pw').value)
+    };
+
+    try {
+        const response = await fetch('/prever', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const res = await response.json();
+        
+        // Exibe a caixa de resultados
+        document.getElementById('resultado-caixa').style.display = 'block';
+        document.getElementById('vencedora-texto').innerText = "Resultado: " + res.vencedora;
+        
+        // Atualiza as 3 barras baseadas no array [Setosa, Versicolor, Virginica]
+        res.probabilidades.forEach((prob, i) => {
+            const barra = document.getElementById('b' + i);
+            const valorReal = (prob * 100).toFixed(1);
+            
+            // Se for 0, usamos 2% de largura visual para a cor aparecer no trilho
+            const larguraVisual = prob === 0 ? 2 : valorReal;
+            
+            barra.style.width = larguraVisual + '%';
+            barra.innerText = valorReal + '%';
+            
+            // Estética: se for 0%, o texto fica pra fora ou escuro
+            barra.style.color = prob > 0.1 ? "white" : "#6c757d";
+            // Se for 0%, removemos o arredondamento da direita para parecer um "marcador"
+            barra.style.borderRadius = prob > 0 ? "10px" : "10px 0 0 10px";
+        });
+
+    } catch (err) {
+        console.error("Erro:", err);
+        alert("Erro na comunicação com o servidor Java.");
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,22 +1,21 @@
-# 🌿 Java ML Analyzer - Predictive Service
+# 🌿 Java ML Analyzer - Predictive Dashboard 3.0
 
-[![Documentação](https://shields.io)](https://github.io)
+Este projeto é uma aplicação de **Ciência de Dados Full-Stack** que integra um motor de Inteligência Artificial desenvolvido em **Java** com um dashboard interativo em **JavaScript**. O sistema utiliza o algoritmo **IBk (K-Nearest Neighbors)** para realizar a classificação taxonômica de espécies de plantas em tempo real.
 
-Este projeto demonstra a implementação de uma API de Ciência de Dados de nível profissional utilizando o ecossistema **Java** e **Spring Boot**. O serviço utiliza o algoritmo de Machine Learning **J48 (Árvore de Decisão)** da biblioteca Weka para realizar predições em tempo real.
+## 🚀 Diferenciais do Projeto
+- **Motor de IA Dinâmico:** Implementação do algoritmo **KNN (k=3)** via biblioteca Weka, permitindo distribuições de probabilidade realistas.
+- **Frontend Reativo:** Interface que traduz cálculos matemáticos complexos em barras de progresso animadas.
+- **Resiliência:** Execução 100% offline com dataset embutido nos recursos do JAR.
+- **Arquitetura Profissional:** Separação de responsabilidades (Controller, Service, DTO, Datalayer).
+- **Operação Linux:** Automação total via scripts Bash para ambientes de baixo consumo (Linux Lite).
 
-## 🚀 Diferenciais Técnicos
-- **Resiliência:** Dataset embutido nos recursos do JAR, permitindo execução offline e segura.
-- **Arquitetura:** Separação clara entre camadas de serviço, DTO e Controller.
-- **Operação Linux:** Script de automação (`build.sh`) que gerencia dependências, limpa portas de rede e executa a aplicação.
-- **Performance:** Otimizado para rodar em ambientes de baixo consumo de recursos (Linux Lite).
+## 🛠️ Tecnologias Utilizadas
+- **Backend:** Java 17 + Spring Boot 3.2.0
+- **Machine Learning:** Weka Engine (IBk/KNN Algorithm)
+- **Frontend:** HTML5, CSS3 Moderno e JavaScript Vanilla
+- **Operação:** Maven, Bash Script e Git
 
-## 🛠️ Tecnologias
-- **Linguagem:** Java 17+
-- **Framework:** Spring Boot 3.2.0
-- **Engine de ML:** Weka (Waikato Environment for Knowledge Analysis)
-- **Gerenciador de Dependências:** Maven
-
-## 📋 Como Executar (Ambiente Linux)
+## 📋 Como Executar o Projeto
 
 1.  **Clone o repositório:**
     ```bash
@@ -24,46 +23,49 @@ Este projeto demonstra a implementação de uma API de Ciência de Dados de nív
     cd ml-analyzer
     ```
 
-2.  **Execute o Script de Build Automático:**
-    O script irá instalar o Maven (se necessário), baixar as libs, limpar a porta 8080 e iniciar o JAR.
+2.  **Inicie o Sistema de Build Automático:**
+    O script `build.sh` preparará o ambiente, compilará o Java e iniciará o servidor:
     ```bash
     chmod +x build.sh
     ./build.sh
     ```
 
----
-
-## 🧪 Como Testar a IA
-
-Após a aplicação iniciar (`Started FraudeAnalyzerApplication`), você pode interagir com o modelo preditivo das seguintes formas:
-
-### 1. Visualizar a Inteligência do Modelo
-Acesse no seu navegador ou via GET para ver a árvore de decisão e as estatísticas de acerto (Matriz de Confusão):
-- **URL:** `http://localhost:8080/analisar`
-
-### 2. Realizar Predição em Tempo Real (via Terminal)
-Abra um novo terminal e envie dados via JSON para a IA classificar a espécie de flor instantaneamente.
-
-**Comando de Teste:**
-```bash
-curl -X POST http://localhost:8080/prever \
--H "Content-Type: application/json" \
--d '{
-  "sepallength": 5.1, 
-  "sepalwidth": 3.5, 
-  "petallength": 1.4, 
-  "petalwidth": 0.2
-}'
-```
-
-**Resposta esperada:**
-```json
-{
-  "status": "sucesso",
-  "ia_output": "Iris-setosa",
-  "model": "J48 Decision Tree"
-}
-```
+3.  **Acesse o Dashboard:**
+    Abra seu navegador e acesse: `http://localhost:8080`
 
 ---
-Desenvolvido por **Renato Mendes** para fins de portfólio em Engenharia de Dados e Backend Java.
+
+## 📈 Como Usar e Testar
+
+### 1. Inserção de Dados via Interface (Dashboard)
+Preencha os campos numéricos no painel lateral e clique em **ANALISAR AGORA**. As barras de probabilidade mostrarão o nível de "certeza" da IA:
+
+- **Teste Setosa (Forte):** `5.1 | 3.5 | 1.4 | 0.2` (Barra Verde 100%)
+- **Teste Versicolor (Forte):** `6.4 | 3.2 | 4.5 | 1.5` (Barra Amarela 100%)
+- **Teste Transição (Incerteza):** `5.5 | 2.5 | 3.8 | 1.1` (Distribuição entre barras)
+
+### 2. Inserção de Novos Conhecimentos (Dataset)
+Para ensinar novos padrões à IA, você pode expandir a base de dados local:
+
+1.  Abra o arquivo `src/main/resources/iris.arff` no seu editor.
+2.  Localize a seção abaixo de `@DATA`.
+3.  Insira uma nova linha seguindo o padrão: `SépalaComp, SépalaLarg, PétalaComp, PétalaLarg, Classe`.
+    *Exemplo:* `4.8,3.1,1.6,0.2,Iris-setosa`
+4.  **Importante:** Após alterar o arquivo, você deve rodar o `./build.sh` novamente para que a IA aprenda os novos dados.
+
+### 3. Relatório Técnico (Backstage)
+Para visualizar as estatísticas detalhadas de performance da IA (Matriz de Confusão e Precisão):
+- Acesse: `http://localhost:8080/analisar`
+
+---
+
+## 🔧 Estrutura de Pastas
+- `src/main/java`: Código fonte Java (Spring/ML).
+- `src/main/resources/static`: Frontend (HTML/CSS/JS).
+- `src/main/resources/iris.arff`: Base de conhecimento da IA.
+- `build.sh`: Automação de infraestrutura local.
+- `github-deploy.sh`: Pipeline de deploy para o GitHub.
+
+---
+**Desenvolvido por Renato Mendes**
+*Focado em Engenharia de Software e Data Science aplicado.*
