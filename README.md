@@ -1,5 +1,7 @@
 # 🌿 Java ML Analyzer - Predictive Service
 
+[![Documentação](https://shields.io)](https://github.io)
+
 Este projeto demonstra a implementação de uma API de Ciência de Dados de nível profissional utilizando o ecossistema **Java** e **Spring Boot**. O serviço utiliza o algoritmo de Machine Learning **J48 (Árvore de Decisão)** da biblioteca Weka para realizar predições em tempo real.
 
 ## 🚀 Diferenciais Técnicos
