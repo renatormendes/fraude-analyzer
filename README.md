@@ -1,3 +1,4 @@
+<img width="1366" height="685" alt="Captura de tela_2026-05-08_18-23-40" src="https://github.com/user-attachments/assets/29fa5008-529e-4215-a4bf-390ed5d61ec0" />
 # 🌿 Java ML Analyzer - Predictive Dashboard 3.0 (Tested Edition)
 
 Este projeto é uma aplicação de **Ciência de Dados Full-Stack** que integra um motor de Inteligência Artificial desenvolvido em **Java (Spring Boot)** com um dashboard interativo em **JavaScript**. O sistema utiliza o algoritmo **IBk (K-Nearest Neighbors)** para realizar a classificação taxonômica de espécies de plantas em tempo real, com cobertura total de **testes automatizados**.
