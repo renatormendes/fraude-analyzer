@@ -1,19 +1,27 @@
-# 🌿 Java ML Analyzer - Predictive Dashboard 3.0
+# 🌿 Java ML Analyzer - Predictive Dashboard 3.0 (Tested Edition)
 
-Este projeto é uma aplicação de **Ciência de Dados Full-Stack** que integra um motor de Inteligência Artificial desenvolvido em **Java** com um dashboard interativo em **JavaScript**. O sistema utiliza o algoritmo **IBk (K-Nearest Neighbors)** para realizar a classificação taxonômica de espécies de plantas em tempo real.
+Este projeto é uma aplicação de **Ciência de Dados Full-Stack** que integra um motor de Inteligência Artificial desenvolvido em **Java (Spring Boot)** com um dashboard interativo em **JavaScript**. O sistema utiliza o algoritmo **IBk (K-Nearest Neighbors)** para realizar a classificação taxonômica de espécies de plantas em tempo real, com cobertura total de **testes automatizados**.
 
-## 🚀 Diferenciais do Projeto
-- **Motor de IA Dinâmico:** Implementação do algoritmo **KNN (k=3)** via biblioteca Weka, permitindo distribuições de probabilidade realistas.
+## 🚀 Diferenciais Técnicos
+- **Motor de IA Dinâmico:** KNN (k=3) via Weka Engine para distribuições de probabilidade realistas e precisas.
 - **Frontend Reativo:** Interface que traduz cálculos matemáticos complexos em barras de progresso animadas.
-- **Resiliência:** Execução 100% offline com dataset embutido nos recursos do JAR.
-- **Arquitetura Profissional:** Separação de responsabilidades (Controller, Service, DTO, Datalayer).
-- **Operação Linux:** Automação total via scripts Bash para ambientes de baixo consumo (Linux Lite).
+- **Resiliência:** Dataset embutido e proteção contra falhas em valores extremos (Boundary Testing).
+- **QA & Testing:** Suíte de testes automatizados com **JUnit 5** e **MockMvc**.
+- **Operação Linux:** Automação total via scripts Bash para ambientes leves (**Linux Lite**).
+
+## 🧪 Estrutura de Qualidade (Testes)
+O projeto conta com uma camada de testes rigorosa para garantir que a IA e a API nunca falhem:
+1.  **Integridade de Dados:** Valida a presença e o formato do dataset `iris.arff`.
+2.  **Resiliência (Boundary Test):** Garante que a IA processe corretamente valores extremos sem travar o sistema.
+3.  **Precisão da IA:** Valida se a predição matemática está correta para casos conhecidos.
+4.  **Teste de API (MockMvc):** Simula requisições JSON reais para validar o contrato dos endpoints REST.
 
 ## 🛠️ Tecnologias Utilizadas
 - **Backend:** Java 17 + Spring Boot 3.2.0
+- **Testes:** JUnit 5, AssertJ e MockMvc
 - **Machine Learning:** Weka Engine (IBk/KNN Algorithm)
 - **Frontend:** HTML5, CSS3 Moderno e JavaScript Vanilla
-- **Operação:** Maven, Bash Script e Git
+- **Operação:** Maven e Bash Script
 
 ## 📋 Como Executar o Projeto
 
@@ -23,49 +31,36 @@ Este projeto é uma aplicação de **Ciência de Dados Full-Stack** que integra 
     cd ml-analyzer
     ```
 
-2.  **Inicie o Sistema de Build Automático:**
-    O script `build.sh` preparará o ambiente, compilará o Java e iniciará o servidor:
+2.  **Inicie o Sistema de Build e QA Automático:**
+    O script `build.sh` preparará o ambiente, compilará o Java e executará os testes. A aplicação só inicia se todos os testes passarem:
     ```bash
     chmod +x build.sh
     ./build.sh
     ```
 
 3.  **Acesse o Dashboard:**
-    Abra seu navegador e acesse: `http://localhost:8080`
+    Abra seu navegador em: `http://localhost:8080`
 
 ---
 
 ## 📈 Como Usar e Testar
 
-### 1. Inserção de Dados via Interface (Dashboard)
-Preencha os campos numéricos no painel lateral e clique em **ANALISAR AGORA**. As barras de probabilidade mostrarão o nível de "certeza" da IA:
-
-- **Teste Setosa (Forte):** `5.1 | 3.5 | 1.4 | 0.2` (Barra Verde 100%)
-- **Teste Versicolor (Forte):** `6.4 | 3.2 | 4.5 | 1.5` (Barra Amarela 100%)
-- **Teste Transição (Incerteza):** `5.5 | 2.5 | 3.8 | 1.1` (Distribuição entre barras)
+### 1. Inserção de Dados via Interface
+Preencha os campos no painel e clique em **ANALISAR AGORA**. As barras mostrarão a confiança da IA:
+- **Setosa (Forte):** `5.1 | 3.5 | 1.4 | 0.2`
+- **Versicolor (Forte):** `6.4 | 3.2 | 4.5 | 1.5`
+- **Transição (Incerteza):** `5.5 | 2.5 | 3.8 | 1.1`
 
 ### 2. Inserção de Novos Conhecimentos (Dataset)
-Para ensinar novos padrões à IA, você pode expandir a base de dados local:
-
-1.  Abra o arquivo `src/main/resources/iris.arff` no seu editor.
-2.  Localize a seção abaixo de `@DATA`.
-3.  Insira uma nova linha seguindo o padrão: `SépalaComp, SépalaLarg, PétalaComp, PétalaLarg, Classe`.
-    *Exemplo:* `4.8,3.1,1.6,0.2,Iris-setosa`
-4.  **Importante:** Após alterar o arquivo, você deve rodar o `./build.sh` novamente para que a IA aprenda os novos dados.
+Para expandir a inteligência da IA:
+1.  Abra o arquivo `src/main/resources/iris.arff`.
+2.  Abaixo de `@DATA`, insira novos exemplos: `SépalaComp, SépalaLarg, PétalaComp, PétalaLarg, Classe`.
+3.  **Reinicie o Build:** Execute `./build.sh` para que a IA processe os novos dados e os testes validem a nova estrutura.
 
 ### 3. Relatório Técnico (Backstage)
-Para visualizar as estatísticas detalhadas de performance da IA (Matriz de Confusão e Precisão):
-- Acesse: `http://localhost:8080/analisar`
-
----
-
-## 🔧 Estrutura de Pastas
-- `src/main/java`: Código fonte Java (Spring/ML).
-- `src/main/resources/static`: Frontend (HTML/CSS/JS).
-- `src/main/resources/iris.arff`: Base de conhecimento da IA.
-- `build.sh`: Automação de infraestrutura local.
-- `github-deploy.sh`: Pipeline de deploy para o GitHub.
+Visualize as estatísticas de performance (Matriz de Confusão) em:
+`http://localhost:8080/analisar`
 
 ---
 **Desenvolvido por Renato Mendes**
-*Focado em Engenharia de Software e Data Science aplicado.*
+*Focado em Engenharia de Software, QA e Data Science aplicado.*
